@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongo-data:/data/db
+
+  nestjs:
+    build: ./nest-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=mongodb://root:password@mongo:27017/
+    depends_on:
+      - mongo
+
+  nextjs:
+    build: ./nextjs-app
+    ports:
+      - "3001:3001"
+    depends_on:
+      - nestjs
+
+volumes:
+  mongo-data:
