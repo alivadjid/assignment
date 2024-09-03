@@ -1,15 +1,25 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MongoRepository } from 'typeorm';
+
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { Task } from './entities/task.entity';
 
 @Injectable()
 export class TasksService {
-  create(createTaskDto: CreateTaskDto) {
+  constructor(
+    @InjectRepository(Task)
+    private readonly taskRepository: MongoRepository<Task>,
+  ) {}
+  create(createTaskDto: CreateTaskDto): Promise<Task> | string {
+    // TODO: remove string in remove
+
     return 'This action adds a new task';
   }
 
-  findAll() {
-    return `This action returns all tasks`;
+  findAll(): Promise<Task[]> {
+    return this.taskRepository.find();
   }
 
   findOne(id: number) {
