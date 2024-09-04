@@ -19,7 +19,7 @@ export class TasksService {
   ) {}
   async create(createTaskDto: CreateTaskDto): Promise<Task> {
     try {
-      const createdTask = this.taskRepository.create(createTaskDto);
+      const createdTask = await this.taskRepository.create(createTaskDto);
       const savedTask = this.taskRepository.save(createdTask);
       return savedTask;
     } catch (error) {
@@ -71,7 +71,6 @@ export class TasksService {
       if (deleted.raw.deletedCount === 0) {
         throw new NotFoundException(`Task with ID ${id} not found`);
       }
-      console.log('deleted', deleted);
     } catch (error) {
       console.error('Error deleting task:', error);
       throw new InternalServerErrorException('Failed to delete task');

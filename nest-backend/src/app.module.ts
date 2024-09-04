@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { TasksModule } from './tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Task } from './tasks/entities/task.entity';
+import { User } from './users/entities/user.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -13,9 +15,10 @@ import { Task } from './tasks/entities/task.entity';
       useNewUrlParser: true,
       useUnifiedTopology: true,
       synchronize: true,
-      entities: [Task],
+      entities: [Task, User],
     }),
     TasksModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
