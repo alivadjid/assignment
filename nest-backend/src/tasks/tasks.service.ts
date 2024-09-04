@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 
@@ -12,14 +16,24 @@ export class TasksService {
     @InjectRepository(Task)
     private readonly taskRepository: MongoRepository<Task>,
   ) {}
-  create(createTaskDto: CreateTaskDto): Promise<Task> | string {
-    // TODO: remove string in remove
-
-    return 'This action adds a new task';
+  async create(createTaskDto: CreateTaskDto): Promise<Task> {
+    try {
+      const createdTask = this.taskRepository.create(createTaskDto);
+      const savedTask = this.taskRepository.save(createdTask);
+      return savedTask;
+    } catch (error) {
+      console.error('Error creating task:', error);
+      throw new InternalServerErrorException('Failed to create task');
+    }
   }
 
-  findAll(): Promise<Task[]> {
-    return this.taskRepository.find();
+  async findAll(): Promise<Task[]> {
+    try {
+      const tasks = await this.taskRepository.find();
+      return tasks;
+    } catch (error) {
+      console.error('Error finding tasks:', error);
+    }
   }
 
   findOne(id: number) {
