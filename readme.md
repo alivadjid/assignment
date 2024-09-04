@@ -14,3 +14,17 @@ docker-compose up --build
 - [ ] next: login page
 - [ ] next: dashboard
 - [ ] next: route guard
+
+#### summary example
+```json
+{
+  "totalTasks": 100,
+  "completedTasks": 40,
+  "pendingTasks": 60,
+  "tasksByStatus": {
+    "inProgress": 20,
+    "onHold": 10,
+    "cancelled": 5
+  }
+}
+```

@@ -9,6 +9,7 @@ import { MongoRepository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class TasksService {
@@ -36,15 +37,44 @@ export class TasksService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  async findOne(id: string) {
+    try {
+      const taskById = await this.taskRepository.find({
+        _id: new ObjectId(id),
+      });
+
+      return taskById;
+    } catch (error) {
+      console.error('Error finding task by id:', error);
+      throw new InternalServerErrorException('Failed to find task by id');
+    }
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  async update(id: string, updateTaskDto: UpdateTaskDto) {
+    try {
+      const updatedTask = await this.taskRepository.save({
+        id: new ObjectId(id),
+        ...updateTaskDto,
+      });
+      return updatedTask;
+    } catch (error) {
+      console.error('Error updating task:', error);
+      throw new InternalServerErrorException('Failed to update task');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  async remove(id: string) {
+    try {
+      const deleted = await this.taskRepository.delete({
+        id: new ObjectId(id),
+      });
+      if (deleted.raw.deletedCount === 0) {
+        throw new NotFoundException(`Task with ID ${id} not found`);
+      }
+      console.log('deleted', deleted);
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      throw new InternalServerErrorException('Failed to delete task');
+    }
   }
 }
