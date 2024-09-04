@@ -76,4 +76,15 @@ export class UsersService {
       throw new InternalServerErrorException('Failed to delete user');
     }
   }
+
+  async findByUsername(username: string) {
+    try {
+      const user = await this.userRepository.findOneBy({ username });
+      console.log('user', user);
+      return user;
+    } catch (error) {
+      console.error('Error finding user by username:', error);
+      throw new InternalServerErrorException('Failed to find user by username');
+    }
+  }
 }
