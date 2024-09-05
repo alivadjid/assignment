@@ -17,7 +17,7 @@ export class UsersService {
     private readonly userRepository: MongoRepository<User>,
   ) {}
   create(createUserDto: CreateUserDto): Promise<User> {
-    console.log("@@@@@@@', createUserDto", createUserDto);
+    // TODO: bcrypt
     try {
       const createdUser = this.userRepository.create(createUserDto);
       const savedUser = this.userRepository.save(createdUser);
@@ -77,7 +77,7 @@ export class UsersService {
     }
   }
 
-  async findByUsername(username: string) {
+  async findByUsername(username: UpdateUserDto['username']) {
     try {
       const user = await this.userRepository.findOneBy({ username });
       console.log('user', user);

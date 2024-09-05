@@ -6,9 +6,13 @@ import {
   Get,
   Request,
   Post,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorators.ts/public.decorator';
+import { Response } from 'express';
+import { SignInDto } from './dto/sign-in.dto';
+import { SignUpDto } from './dto/sign-up.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -17,18 +21,33 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  // TODO: replace Parameters with dto
-  signIn(@Body() signInDto: Record<string, string>) {
-    const token = this.authService.signIn(
-      signInDto.username,
-      signInDto.password,
-    );
-
+  signIn(
+    @Body() signInDto: SignInDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const token = this.authService.signIn(signInDto);
+    // console.log('token', token);
+    // res.cookie('accessToken', token, {
+    //   httpOnly: true,
+    //   maxAge: 3600,
+    // });
+    // return { message: 'Login successfull' };
     return token;
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('register')
+  signUp(@Body() signUpDto: SignUpDto) {
+    const user = this.authService.signUp(signUpDto);
+
+    return user;
   }
 
   @Get('profile')
   getProfile(@Request() req) {
+    // check
+    const accessToken = req.cookies['accessToken'];
     return req.user;
   }
 }
