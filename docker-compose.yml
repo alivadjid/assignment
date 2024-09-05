@@ -22,11 +22,16 @@ services:
       - mongo
 
   nextjs:
-    build: ./next-frontend
-    ports:
-      - "3001:3001"
+    build:
+      context: ./next-frontend
+      target: runner
     volumes:
       - ./next-frontend:/app
+    command: npm run dev
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
     depends_on:
       - nestjs
 
