@@ -25,6 +25,8 @@ services:
     build:
       context: ./next-frontend
       target: runner
+      args:
+        - INSTALL_TAILWIND=true
     volumes:
       - ./next-frontend:/app
     command: npm run dev
