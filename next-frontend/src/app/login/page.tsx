@@ -3,7 +3,7 @@ import Image from "next/image"
 import { useContext } from 'react';
 import { StateContext } from '../StateContext';
 import authApi from '@/api/authApi'
-import {navigate}from '../actions'
+import { navigate }from '../actions'
 
 
 const LoginPage = () => {
@@ -14,23 +14,35 @@ const LoginPage = () => {
   // }
 
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
+    if (!(event.target instanceof HTMLElement)) return;
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     const jsonData = Object.fromEntries(formData)
 
-    const loginData = await authApi.login(jsonData)
+    const targetName = (event.nativeEvent as SubmitEvent).submitter?.getAttribute('name')
+    
+    switch(targetName) {
+      case 'signIn': {
+        const loginData = await authApi.login(jsonData)
  
-    if (loginData.accessToken) {
-      saveToken(loginData.accessToken)
-      const userData = await authApi.getUser(loginData.accessToken)
-      saveUser(userData)
+        if (loginData.accessToken) {
+          saveToken(loginData.accessToken)
+          const userData = await authApi.getUser(loginData.accessToken)
+          saveUser(userData)
 
-      navigate('dashboard')
-      
+          navigate('dashboard')
+        } 
+        break;
+      }
+      case 'register': {
+        console.log('jsonData', jsonData)
+        const createdUser = await authApi.register(jsonData)
+        console.log('createduser', createdUser)
+        break;
+      }
     }
   }
-
 
   return <>
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -85,9 +97,18 @@ const LoginPage = () => {
           <div>
             <button
               type="submit"
+              name="signIn"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Sign in
+            </button>
+
+            <button
+              type="submit" 
+              name="register"
+              className="flex w-full justify-center mt-2 rounded-md  px-3 py-1.5 text-sm font-semibold leading-6 text-black shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+            >
+              Register
             </button>
           </div>
         </form>

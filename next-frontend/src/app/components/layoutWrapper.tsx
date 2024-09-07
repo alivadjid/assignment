@@ -27,9 +27,8 @@ const LayoutWrapper = ({children}:Readonly<{
   ])
 
   const [userNavigation] = useState([
-    { name: 'Your Profile', href: '#' },
-    { name: 'Settings', href: '#' },
-    { name: 'Sign out', href: '#' },
+    { name: 'Your Profile', href: '#', url: 'profile' },
+    { name: 'Sign out', href: '#', url: 'signOut' },
   ])
  
   function classNames(...classes: string[]) {
@@ -53,7 +52,7 @@ const LayoutWrapper = ({children}:Readonly<{
               </div>
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
-                  {'username' in user ? navigation.map((item) => (
+                  {user.username ? navigation.map((item) => (
                     <a
                       key={item.name}
                       href={item.href}
@@ -83,7 +82,7 @@ const LayoutWrapper = ({children}:Readonly<{
             </div>
             <div className="hidden md:block">
               <div className="ml-4 flex items-center md:ml-6">
-                { 'username' in user ? <UserInformation userNavigation={userNavigation} /> : <LoginButton />}
+                { user.username ? <UserInformation userNavigation={userNavigation} /> : <LoginButton />}
               </div>
             </div>
             <div className="-mr-2 flex md:hidden">

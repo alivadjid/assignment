@@ -1,15 +1,35 @@
-import { useState } from 'react'
 import Image from 'next/image'
 import { 
   Menu, MenuButton, MenuItem, MenuItems
  } from '@headlessui/react'
+import Cookies from 'js-cookie'
+ import { navigate }from '../../actions'
+ import { useContext } from 'react';
+import { StateContext } from '../../StateContext';
 
 const UserInformation = ({userNavigation}: Readonly<{
   userNavigation: {
     name: string;
     href: string;
+    url: string
   }[]
 }>) => {
+  const { removeUser, removeToken } = useContext(StateContext);
+
+  // function handlerClick(e: React.MouseEvent<HTMLElement>) {
+  //   if (!(e.target instanceof HTMLElement)) return;
+  //   console.log('n', e.target.textContent)
+  // }
+  function handlerClick(url: string) {
+    console.log('url', url)
+    if(url === 'signOut') {
+      Cookies.remove('isAuthenticated')
+      localStorage.removeItem('appState')
+      removeUser()
+      removeToken()
+      return navigate('/login')
+    }
+  }
 
   return (
     <Menu as="div" className="relative ml-3">
@@ -27,8 +47,10 @@ const UserInformation = ({userNavigation}: Readonly<{
       {userNavigation.map((item) => (
         <MenuItem key={item.name}>
           <a
+            key={item.url}
             href={item.href}
             className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
+            onClick={() => handlerClick(item.url)}
           >
             {item.name}
           </a>

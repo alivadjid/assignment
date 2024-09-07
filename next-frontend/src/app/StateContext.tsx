@@ -4,31 +4,35 @@ import Cookies from 'js-cookie'
 import authApi from '@/api/authApi';
 
 const StateContext = createContext({
-  user: {},
-  saveUser: (userData: {}) => {userData},
+  user: {username: ''},
+  saveUser: (userData: {username: string}) => {userData},
   removeUser: () => {},
   token: '',
   saveToken: (token: string) => {token},
   tasks: [],
   saveTasks: (tasks: []) => {tasks},
+  removeToken: () => {},
 });
 
 const StateProvider = ({ children }: {children: React.ReactNode}) => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({username: ''});
   const [token, setToken] = useState('');
   const [tasks, setTasks] = useState([]);
 
 
-  const saveUser = (userData: {}) => {
+  const saveUser = (userData: {username: string}) => {
     setUser(userData);
   };
 
   const removeUser = () => {
-    setUser({});
+    setUser({username: ''});
   };
 
   const saveToken = (token: string) => {
     setToken(token)
+  }
+  const removeToken = () => {
+    setToken('')
   }
   const saveTasks = (tasks: []) => {
     setTasks(tasks)
@@ -56,7 +60,7 @@ const StateProvider = ({ children }: {children: React.ReactNode}) => {
   }, [token, tasks]);
 
   return (
-    <StateContext.Provider value={{ user, saveUser, removeUser, token, saveToken, tasks, saveTasks }}>
+    <StateContext.Provider value={{ user, saveUser, removeUser, token, saveToken, tasks, saveTasks, removeToken }}>
       {children}
     </StateContext.Provider>
   );

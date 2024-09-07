@@ -1,6 +1,7 @@
 import {
   DisclosureButton, 
  } from '@headlessui/react'
+import Image from 'next/image';
 
 const MobileMenu = ({userNavigation, user}: Readonly<{
   userNavigation: {
@@ -15,7 +16,7 @@ const MobileMenu = ({userNavigation, user}: Readonly<{
     <div className="border-t border-gray-700 pb-3 pt-4">
       <div className="flex items-center px-5">
         <div className="flex-shrink-0">
-          <img alt="" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" className="h-10 w-10 rounded-full" />
+          <Image alt="" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" className="h-10 w-10 rounded-full" width={10} height={10} />
         </div>
         <div className="ml-3">
           <div className="text-base font-medium leading-none text-white">{user.username}</div>
