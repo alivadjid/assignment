@@ -5,6 +5,7 @@ import { StateContext } from '../StateContext';
 import authApi from '@/api/authApi'
 import {navigate}from '../actions'
 
+
 const LoginPage = () => {
   const { user, saveUser, token, saveToken } = useContext(StateContext);
   console.log('user', user)
@@ -22,7 +23,6 @@ const LoginPage = () => {
  
     if (loginData.accessToken) {
       saveToken(loginData.accessToken)
-
       const userData = await authApi.getUser(loginData.accessToken)
       saveUser(userData)
 

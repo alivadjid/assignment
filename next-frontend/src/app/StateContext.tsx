@@ -2,9 +2,10 @@
 import React, { createContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie'
 import authApi from '@/api/authApi';
+
 const StateContext = createContext({
   user: {},
-  saveUser: (userData: object) => {userData},
+  saveUser: (userData: {}) => {userData},
   removeUser: () => {},
   token: '',
   saveToken: (token: string) => {token},
@@ -18,7 +19,7 @@ const StateProvider = ({ children }: {children: React.ReactNode}) => {
   const [tasks, setTasks] = useState([]);
 
 
-  const saveUser = (userData: object) => {
+  const saveUser = (userData: {}) => {
     setUser(userData);
   };
 
@@ -37,23 +38,22 @@ const StateProvider = ({ children }: {children: React.ReactNode}) => {
     const storedData = localStorage.getItem('appState');
     if (storedData) {
       const parsedData = JSON.parse(storedData);
-      setUser(parsedData.user);
       setToken(parsedData.token);
       setTasks(parsedData.tasks);
 
-      Cookies.set('isAuthenticated', 'true', { expires: 1 })
-
       if (parsedData.token) {
+        Cookies.set('isAuthenticated', 'true', { expires: 1 })
         authApi.getUser(parsedData.token).then((data) => setUser(data))
       }
     }
   }, []);
 
   useEffect(() => {
-    if (Object.keys(user).length || tasks.length || token) {
-      localStorage.setItem('appState', JSON.stringify({ user, tasks, token }));
+    if (tasks.length || token) {
+      if (token) Cookies.set('isAuthenticated', 'true', { expires: 1 })
+      localStorage.setItem('appState', JSON.stringify({ tasks, token }));
     }
-  }, [user, token, tasks]);
+  }, [token, tasks]);
 
   return (
     <StateContext.Provider value={{ user, saveUser, removeUser, token, saveToken, tasks, saveTasks }}>
