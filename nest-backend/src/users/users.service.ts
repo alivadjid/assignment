@@ -19,6 +19,7 @@ export class UsersService {
   create(createUserDto: CreateUserDto): Promise<User> {
     // TODO: bcrypt
     try {
+      console.log('createUserDto', createUserDto);
       const createdUser = this.userRepository.create(createUserDto);
       const savedUser = this.userRepository.save(createdUser);
       return savedUser;
