@@ -6,8 +6,7 @@ const LoginPage = () => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     const jsonData = Object.fromEntries(formData)
-    console.log('formData',formData)
-    console.log('jsonData',jsonData)
+
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: {
@@ -16,10 +15,8 @@ const LoginPage = () => {
       body: JSON.stringify(jsonData),
     })
  
-    // Handle response if necessary
     const data = await response.json()
-    console.log('data',data)
-    // ...
+    console.log('data', data)
   }
   return <>
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
