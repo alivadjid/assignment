@@ -10,9 +10,10 @@ docker-compose up --build
 - [ ] nest: authorization/registration
 - [ ] nest: task entity
 - [ ] nest: auth guard
-
 - [ ] next: login page
 - [ ] next: dashboard
+
+- [ ] next: api bind
 - [ ] next: route guard
 
 #### summary example

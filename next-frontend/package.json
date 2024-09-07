@@ -12,7 +12,6 @@
     "@headlessui/react": "^2.1.5",
     "@heroicons/react": "^2.1.5",
     "next": "14.2.8",
-    "outline": "link:@heroicons/react/24/outline",
     "react": "^18",
     "react-dom": "^18"
   },
