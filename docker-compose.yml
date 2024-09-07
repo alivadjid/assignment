@@ -14,8 +14,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=mongodb://root:password@mongo:27017/
-      - JWT_SECRET=secret
+      DATABASE_URL: mongodb://root:password@mongo:27017/
+      JWT_SECRET: secret
     volumes:
       - ./nest-backend:/app
     depends_on:
@@ -34,6 +34,7 @@ services:
       - "3001:3001"
     environment:
       NODE_ENV: development
+      BACKEND_URL: http://nestjs:3000/api
     depends_on:
       - nestjs
 
