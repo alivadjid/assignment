@@ -1,23 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { api } from '../../../utils/api/api'
 
-type Token = {
-  accessToken: string
-}
 
-type LoginApi = {
-  data: Token
-  status: number
+type ProfileApi = {
+  username: string
+  sub: string
+  iat: number
+  exp: number
 }
  
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const frontData = req.body
-
+  const headers = req.headers
   try {
-    const {data, status} = await api.post<LoginApi>('/auth/login', frontData)
+    const {data, status} = await api.get<ProfileApi>('/auth/profile', {headers})
 
     if (status === 200) {
       res.status(200).json(data)

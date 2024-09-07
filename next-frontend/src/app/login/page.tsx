@@ -1,23 +1,37 @@
 'use client'
 import Image from "next/image"
+import { useContext } from 'react';
+import { StateContext } from '../StateContext';
+import authApi from '@/api/authApi'
+import {navigate}from '../actions'
 
 const LoginPage = () => {
+  const { user, saveUser, token, saveToken } = useContext(StateContext);
+  console.log('user', user)
+  // if (!user) {
+  //   return <div>Please login</div>;
+  // }
+
+
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     const jsonData = Object.fromEntries(formData)
 
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(jsonData),
-    })
+    const loginData = await authApi.login(jsonData)
  
-    const data = await response.json()
-    console.log('data', data)
+    if (loginData.accessToken) {
+      saveToken(loginData.accessToken)
+
+      const userData = await authApi.getUser(loginData.accessToken)
+      saveUser(userData)
+
+      navigate('dashboard')
+      
+    }
   }
+
+
   return <>
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -78,6 +92,9 @@ const LoginPage = () => {
           </div>
         </form>
       </div>
+      <h1>USER</h1>
+      {JSON.stringify(user)}
+      {token}
     </div>
   </>
 }

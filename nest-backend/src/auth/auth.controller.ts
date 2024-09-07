@@ -47,7 +47,7 @@ export class AuthController {
   @Get('profile')
   getProfile(@Request() req) {
     // check
-    const accessToken = req.cookies['accessToken'];
+    // const accessToken = req.cookies['accessToken'];
     return req.user;
   }
 }
