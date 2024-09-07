@@ -17,6 +17,7 @@ const Dashboard = () => {
       </div>
 
       <div className="p-4 w-full bg-white rounded-2xl">
+        <h2 className="text-xl font-bold">Summary</h2>
         <h2 className="text-2xl font-bold mb-4">Task edit and add</h2>
         <div className="bg-gray-100 p-4 rounded">
           {/* <!-- Add your task edit and add form here --> */}
