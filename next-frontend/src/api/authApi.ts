@@ -25,14 +25,13 @@ async function getUser(token: string): Promise<{username: string}> {
 }
 
 async function register(jsonData: {[k: string]: FormDataEntryValue}): Promise<{username: string}> {
-  console.log('register', jsonData)
   const response = await fetch('/api/auth/register', {
     method: 'POST',
     body: JSON.stringify(jsonData),
   })
 
   const data = await response.json()
-  console.log('data',data)
+
   return data
 }
 
