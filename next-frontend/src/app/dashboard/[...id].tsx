@@ -1,17 +1,24 @@
 'use client'
 import { useContext } from 'react';
-import { StateContext } from '../StateContext';
 import { Fragment, useEffect } from "react"
+// import { useRouter } from 'next/router'
+
+import { StateContext } from '../StateContext';
+import TaskForm from '../components/taskFrom/form';
 import taskApi from '@/api/taskApi'
 const Dashboard = () => {
+  // const router = useRouter()
+  // console.log('router', router)
   const { saveTasks, token, tasks } = useContext(StateContext);
 
   useEffect(() => {
-    taskApi.getTaskList(token).then((taskList) => {
-      saveTasks(taskList) 
-      console.log('taskList', taskList)
-      console.log('tasks', tasks)
-    })
+    if(token) {
+      taskApi.getTaskList(token).then((taskList) => {
+        saveTasks(taskList) 
+        console.log('taskList', taskList)
+        console.log('tasks', tasks)
+      })
+    }
   }, [token])
 
   return (<>
@@ -23,7 +30,11 @@ const Dashboard = () => {
         </button>
         <ul className="mt-4">
           { Array.isArray(tasks) && tasks.map((task) => {
-            return <li className="py-2 border-b border-gray-300 cursor-pointer" key={task.id}>{task.title}</li>
+            return (
+              <li className="py-2 border-b border-gray-300 cursor-pointer" key={task.id}>
+                <a href={`/dashboard/${task.id}`}>{task.title}</a>
+              </li>
+            )
           })}
         </ul>
       </div>
@@ -33,6 +44,7 @@ const Dashboard = () => {
         <h2 className="text-2xl font-bold mb-4">Task edit and add</h2>
         <div className="bg-gray-100 p-4 rounded">
           {/* <!-- Add your task edit and add form here --> */}
+          <TaskForm />
         </div>
       </div>
     </div>

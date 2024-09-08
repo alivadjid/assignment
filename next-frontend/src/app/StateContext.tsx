@@ -10,7 +10,7 @@ const StateContext = createContext({
   removeUser: () => {},
   token: '',
   saveToken: (token: string) => {token},
-  tasks: [{}],
+  tasks: [{title: '', dueDate: '', id: ''}],
   saveTasks: (tasks: TaskApi[]) => {tasks},
   removeToken: () => {},
 });
@@ -53,7 +53,7 @@ const StateProvider = ({ children }: {children: React.ReactNode}) => {
   }, []);
 
   useEffect(() => {
-    if (tasks.length || token) {
+    if (Array.isArray(tasks) && tasks.length || token) {
       if (token) Cookies.set('isAuthenticated', 'true', { expires: 1 })
       localStorage.setItem('appState', JSON.stringify({ tasks, token }));
     }
