@@ -1,16 +1,52 @@
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, useContext } from 'react';
+import { useParams } from 'next/navigation'
+import { StateContext } from '@/app/StateContext';
+
 
 const TaskForm = () => {
+  const { saveTasks, token, tasks } = useContext(StateContext);
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [status, setStatus] = useState('pending');
 
+  const params = useParams()
+  const queryId = Array.isArray(params?.id) ? params?.id[0] : ''
+  const isMounted = useRef(false)
+  console.log('queryId', queryId)
+
+  useEffect(() => {
+    const setFormInitialData = () => {
+      if(queryId === 'new') {
+        setDefaultValues({})
+      } else if(queryId) {
+        const taskId = queryId
+        const activeTask = tasks.find((task) => task.id === taskId)
+        console.log(activeTask)
+        setDefaultValues({title: activeTask?.title, description: activeTask?.description, dueDate: activeTask?.dueDate, status: activeTask?.status})
+      }
+    }
+  
+    if (isMounted.current && queryId) {
+      console.log('query is changed', queryId)
+      setFormInitialData()
+    } else {
+      isMounted.current = true
+    }
+  }, [queryId, tasks])
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Call API to create/update task
     console.log({ title, description, dueDate, status });
   };
+
+  const setDefaultValues = ({title = '', description = '', dueDate = '', status = 'pending'}) => {
+    setTitle(title)
+    setDescription(description)
+    setDueDate(dueDate)
+    setStatus(status)
+  }
 
   return (
     <div className="max-w-md mx-auto p-4 bg-white rounded shadow-md">
@@ -70,7 +106,7 @@ const TaskForm = () => {
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           type="submit"
         >
-          Submit
+          {queryId === 'new' ? 'Add Task' : 'Update Task'}
         </button>
       </form>
     </div>

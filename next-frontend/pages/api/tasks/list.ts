@@ -7,6 +7,7 @@ export type TaskApi = {
   title: string
   description: string
   dueDate: string
+  status: 'pending' | 'inProgress' | 'completed'
 }
  
 export default async function handler(
@@ -14,10 +15,8 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const headers = req.headers
-  console.log('headers', headers)
   try {
     const {data, status} = await api.get<TaskApi[]>('/tasks', {headers})
-    console.log('data', data)
     if (status === 200) {
       res.status(200).json(data)
     }

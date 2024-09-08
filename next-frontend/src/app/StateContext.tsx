@@ -10,7 +10,7 @@ const StateContext = createContext({
   removeUser: () => {},
   token: '',
   saveToken: (token: string) => {token},
-  tasks: [{title: '', dueDate: '', id: '', description: ''}],
+  tasks: [{title: '', dueDate: '', id: '', description: '', status: 'pending'}],
   saveTasks: (tasks: TaskApi[]) => {tasks},
   removeToken: () => {},
 });

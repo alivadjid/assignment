@@ -20,7 +20,7 @@ const LayoutWrapper = ({children}:Readonly<{
   children: React.ReactNode;
 }>) => {
   const { user } = useContext(StateContext);
-  console.log('user', user)
+
   const [navigation] = useState([
     { name: 'Main', href: '/', current: true },
     { name: 'Dashboard', href: '/dashboard', current: false },

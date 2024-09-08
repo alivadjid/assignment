@@ -1,7 +1,7 @@
 import { TaskApi } from "../../pages/api/tasks/list"
+import { DeleteTaskApi } from "../../pages/api/tasks/delete"
 
 async function getTaskList(token: string): Promise<TaskApi[]> {
-  console.log('taskApi', token)
   const response = await fetch('/api/tasks/list', {
     method: 'GET',
     headers: {
@@ -9,13 +9,11 @@ async function getTaskList(token: string): Promise<TaskApi[]> {
     }
   })
   const data = await response.json()
-  console.log('data', data)
 
   return data
 }
 
-async function deleteTask({token, id}: {token: string, id: string}): Promise<TaskApi[]> {
-  console.log('taskApi', token)
+async function deleteTask({token, id}: {token: string, id: string}): Promise<DeleteTaskApi> {
   const response = await fetch('/api/tasks/delete', {
     method: 'POST',
     headers: {
@@ -24,7 +22,6 @@ async function deleteTask({token, id}: {token: string, id: string}): Promise<Tas
     body: JSON.stringify({id})
   })
   const data = await response.json()
-  console.log('data', data)
 
   return data
 }
