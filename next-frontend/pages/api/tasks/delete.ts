@@ -1,25 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { api } from '../../../utils/api/api'
 
-
-export type TaskApi = {
-  id: string
-  title: string
-  description: string
-  dueDate: string
-}
- 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const headers = req.headers
+  const body = req.body
+  console.log('headers', body)
   console.log('headers', headers)
   try {
-    const {data, status} = await api.get<TaskApi[]>('/tasks', {headers})
+    const {data, status} = await api.delete(`/tasks/${JSON.parse(body).id}`, {headers})
     console.log('data', data)
     if (status === 200) {
-      res.status(200).json(data)
+      res.status(200).json({deleted: true})
     }
 
   } catch(error) {
