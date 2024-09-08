@@ -1,7 +1,20 @@
-// 'use client'
-import { Fragment } from "react"
+'use client'
+import { useContext } from 'react';
+import { StateContext } from '../StateContext';
+import { Fragment, useEffect } from "react"
+import taskApi from '@/api/taskApi'
 const Dashboard = () => {
-  return <>
+  const { saveTasks, token, tasks } = useContext(StateContext);
+
+  useEffect(() => {
+    taskApi.getTaskList(token).then((taskList) => {
+      saveTasks(taskList) 
+      console.log('taskList', taskList)
+      console.log('tasks', tasks)
+    })
+  }, [token])
+
+  return (<>
    <Fragment>
     <div className="flex h-screen">
       <div className="p-4 w-1/4 bg-gray-100 border-r border-gray-300 rounded-2xl">
@@ -9,10 +22,9 @@ const Dashboard = () => {
           Add Task
         </button>
         <ul className="mt-4">
-          <li className="py-2 border-b border-gray-300">Task</li>
-          <li className="py-2 border-b border-gray-300">Task</li>
-          <li className="py-2 border-b border-gray-300">Task</li>
-          <li className="py-2">Task</li>
+          { Array.isArray(tasks) && tasks.map((task) => {
+            return <li className="py-2 border-b border-gray-300 cursor-pointer" key={task.id}>{task.title}</li>
+          })}
         </ul>
       </div>
 
@@ -24,11 +36,8 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
-      
    </Fragment>
-
-
-  </>
+  </>)
 }
 
 export default Dashboard

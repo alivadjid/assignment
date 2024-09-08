@@ -2,6 +2,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie'
 import authApi from '@/api/authApi';
+import type { TaskApi } from '../../pages/api/tasks/list'
 
 const StateContext = createContext({
   user: {username: ''},
@@ -9,16 +10,15 @@ const StateContext = createContext({
   removeUser: () => {},
   token: '',
   saveToken: (token: string) => {token},
-  tasks: [],
-  saveTasks: (tasks: []) => {tasks},
+  tasks: [{}],
+  saveTasks: (tasks: TaskApi[]) => {tasks},
   removeToken: () => {},
 });
 
 const StateProvider = ({ children }: {children: React.ReactNode}) => {
   const [user, setUser] = useState({username: ''});
   const [token, setToken] = useState('');
-  const [tasks, setTasks] = useState([]);
-
+  const [tasks, setTasks] = useState<TaskApi[]>([]);
 
   const saveUser = (userData: {username: string}) => {
     setUser(userData);
@@ -34,7 +34,7 @@ const StateProvider = ({ children }: {children: React.ReactNode}) => {
   const removeToken = () => {
     setToken('')
   }
-  const saveTasks = (tasks: []) => {
+  const saveTasks = (tasks: TaskApi[]) => {
     setTasks(tasks)
   }
 

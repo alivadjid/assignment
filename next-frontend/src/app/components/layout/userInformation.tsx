@@ -3,8 +3,8 @@ import {
   Menu, MenuButton, MenuItem, MenuItems
  } from '@headlessui/react'
 import Cookies from 'js-cookie'
- import { navigate }from '../../actions'
- import { useContext } from 'react';
+import { navigate }from '../../actions'
+import { useContext } from 'react';
 import { StateContext } from '../../StateContext';
 
 const UserInformation = ({userNavigation}: Readonly<{
