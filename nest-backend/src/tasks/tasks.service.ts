@@ -48,6 +48,7 @@ export class TasksService {
   }
 
   async findAll(req: Request): Promise<Task[]> {
+    console.log('@@@');
     try {
       const userFromRequest = await this.getUserFromRequest(req);
 
@@ -70,6 +71,26 @@ export class TasksService {
     } catch (error) {
       console.error('Error finding task by id:', error);
       throw new InternalServerErrorException('Failed to find task by id');
+    }
+  }
+
+  async getSummary(req: Request) {
+    console.log('getSummary');
+    try {
+      const allTasks = await this.findAll(req);
+      const summary = {
+        totalTasks: allTasks.length,
+        completedTasks: allTasks.filter((task) => task.status === 'completed')
+          .length,
+        pendingTasks: allTasks.filter((task) => task.status === 'pending')
+          .length,
+        inProgressTasks: allTasks.filter((task) => task.status === 'inProgress')
+          .length,
+      };
+      return summary;
+    } catch (error) {
+      console.error('Error get summary:', error);
+      throw new InternalServerErrorException('Failed to generate summary');
     }
   }
 

@@ -16,7 +16,7 @@ export class Task {
   dueDate: Date;
 
   @Column({ default: 'pending' })
-  status: 'pending' | 'in-progress' | 'completed';
+  status: 'pending' | 'inProgress' | 'completed';
 
   @ManyToOne(() => User, (user) => user.tasks)
   user: User;

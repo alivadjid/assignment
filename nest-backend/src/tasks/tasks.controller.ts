@@ -27,6 +27,11 @@ export class TasksController {
     return this.tasksService.findAll(req);
   }
 
+  @Get('/summary')
+  getSummary(@Request() req) {
+    return this.tasksService.getSummary(req);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tasksService.findOne(id);
