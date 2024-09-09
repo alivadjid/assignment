@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie'
+
 async function login(jsonData: {[k: string]: FormDataEntryValue}): Promise<{accessToken: string}> {
   const response = await fetch('/api/auth/login', {
     method: 'POST',
@@ -18,6 +20,11 @@ async function getUser(token: string): Promise<{username: string}> {
       Authorization: `Bearer ${token}`,
     }
   })
+
+  if (response.status === 401) {
+    Cookies.remove('isAuthenticated')
+    localStorage.removeItem('appState')
+  }
 
   const data = await response.json()
 
