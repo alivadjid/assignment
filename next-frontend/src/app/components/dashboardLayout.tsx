@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { Fragment, useContext, useEffect } from "react"
-import { TaskApi } from '../../../pages/api/tasks/list';
 import { StateContext } from '../StateContext';
 import taskApi from '@/api/taskApi'
 

@@ -1,35 +1,34 @@
-import { useEffect, useLayoutEffect, useRef, useState, useContext } from 'react';
+import { useEffect, useRef, useState, useContext } from 'react';
 import { useParams } from 'next/navigation'
 import { StateContext } from '@/app/StateContext';
-
+import taskApi from '@/api/taskApi'
+import { TaskApi } from '../../../../pages/api/tasks/list';
 
 const TaskForm = () => {
-  const { saveTasks, token, tasks } = useContext(StateContext);
+  const { token, tasks, addTask, updateTask } = useContext(StateContext);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
-  const [status, setStatus] = useState('pending');
+  const [status, setStatus] = useState<TaskApi['status']>('pending');
 
   const params = useParams()
   const queryId = Array.isArray(params?.id) ? params?.id[0] : ''
   const isMounted = useRef(false)
-  console.log('queryId', queryId)
 
   useEffect(() => {
     const setFormInitialData = () => {
       if(queryId === 'new') {
         setDefaultValues({})
-      } else if(queryId) {
+      } else if(queryId && tasks.length) {
         const taskId = queryId
-        const activeTask = tasks.find((task) => task.id === taskId)
-        console.log(activeTask)
-        setDefaultValues({title: activeTask?.title, description: activeTask?.description, dueDate: activeTask?.dueDate, status: activeTask?.status})
+        const activeTask = tasks?.find((task) => task.id === taskId) as TaskApi
+        if (!activeTask) return
+        setDefaultValues({title: activeTask.title, description: activeTask.description, dueDate: activeTask.dueDate, status: activeTask.status})
       }
     }
   
     if (isMounted.current && queryId) {
-      console.log('query is changed', queryId)
       setFormInitialData()
     } else {
       isMounted.current = true
@@ -38,10 +37,16 @@ const TaskForm = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log({ title, description, dueDate, status });
+    if (queryId === 'new') {
+      const createdTask = await taskApi.createTask({token, taskData: {title, description, dueDate, status}})
+      addTask(createdTask)
+    } else {
+      const updatedTask = await taskApi.updateTask({token, taskData: {title, description, dueDate, status, id: queryId}})
+      updateTask(updatedTask[0])
+    }
   };
 
-  const setDefaultValues = ({title = '', description = '', dueDate = '', status = 'pending'}) => {
+  const setDefaultValues = ({title = '', description = '', dueDate = '', status = 'pending' as TaskApi['status']}) => {
     setTitle(title)
     setDescription(description)
     setDueDate(dueDate)
@@ -95,7 +100,7 @@ const TaskForm = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="status"
             value={status}
-            onChange={(event) => setStatus(event.target.value)}
+            onChange={(event) => setStatus(event.target.value as TaskApi['status'])}
           >
             <option value="pending">Pending</option>
             <option value="inProgress">In Progress</option>

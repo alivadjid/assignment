@@ -52,9 +52,9 @@ export class TasksService {
 
   async update(id: string, updateTaskDto: UpdateTaskDto) {
     try {
-      const updatedTask = await this.taskRepository.save({
-        id: new ObjectId(id),
-        ...updateTaskDto,
+      await this.taskRepository.update(new ObjectId(id), updateTaskDto);
+      const updatedTask = await this.taskRepository.find({
+        _id: new ObjectId(id),
       });
       return updatedTask;
     } catch (error) {

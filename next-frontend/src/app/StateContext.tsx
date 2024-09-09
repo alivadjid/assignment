@@ -12,6 +12,8 @@ const StateContext = createContext({
   saveToken: (token: string) => {token},
   tasks: [{title: '', dueDate: '', id: '', description: '', status: 'pending'}],
   saveTasks: (tasks: TaskApi[]) => {tasks},
+  addTask: (task: TaskApi) => {task},
+  updateTask: (task: TaskApi) => {task},
   removeToken: () => {},
 });
 
@@ -38,6 +40,14 @@ const StateProvider = ({ children }: {children: React.ReactNode}) => {
     setTasks(tasks)
   }
 
+  const addTask = (task: TaskApi) => setTasks([...tasks, task])
+  const updateTask = (task: TaskApi) => {
+    const index = tasks.findIndex(t => t.id === task.id)
+    if(index !== -1) {
+      setTasks([...tasks.slice(0, index), task, ...tasks.slice(index + 1)])
+    }
+  }
+
   useEffect(() => {
     const storedData = localStorage.getItem('appState');
     if (storedData) {
@@ -60,7 +70,7 @@ const StateProvider = ({ children }: {children: React.ReactNode}) => {
   }, [token, tasks]);
 
   return (
-    <StateContext.Provider value={{ user, saveUser, removeUser, token, saveToken, tasks, saveTasks, removeToken }}>
+    <StateContext.Provider value={{ user, saveUser, removeUser, token, saveToken, tasks, saveTasks, removeToken, addTask, updateTask }}>
       {children}
     </StateContext.Provider>
   );
