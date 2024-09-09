@@ -3,9 +3,11 @@ import { useParams } from 'next/navigation'
 import { StateContext } from '@/app/StateContext';
 import taskApi from '@/api/taskApi'
 import { TaskApi } from '../../../../pages/api/tasks/list';
+import { TaskContext } from '../dashboardLayout';
 
 const TaskForm = () => {
-  const { token, tasks, addTask, updateTask } = useContext(StateContext);
+  const { token } = useContext(StateContext);
+  const { tasks, addTask, updateTask } = useContext(TaskContext);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');

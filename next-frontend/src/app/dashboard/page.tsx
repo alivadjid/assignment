@@ -1,5 +1,5 @@
 'use client'
-import DashboardLayout from '../components/dashboardLayout'
+import { DashboardLayout } from '../components/dashboardLayout'
 const Dashboard = () => {
   return <>
     <DashboardLayout />

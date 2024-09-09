@@ -1,14 +1,23 @@
 import Link from 'next/link';
-import { Fragment, useContext, useEffect } from "react"
+import { Fragment, useContext, useEffect, useState, createContext } from "react"
 import { StateContext } from '../StateContext';
 import taskApi from '@/api/taskApi'
+import { TaskApi } from '../../../pages/api/tasks/list';
+
+const TaskContext = createContext({
+  addTask: (task: TaskApi) => {task},
+  updateTask: (task: TaskApi) => {task},
+  tasks: [{title: '', dueDate: '', id: '', description: '', status: 'pending'}]
+});
 
 const DashboardLayout = ({
   children, 
 }: {
   children?: React.ReactNode, 
 }) => {
-  const { saveTasks, token, tasks } = useContext(StateContext);
+  const { token } = useContext(StateContext);
+  const [tasks, setTasks] = useState<TaskApi[]>([]);
+
 
   useEffect(() => {
     if(token) {
@@ -25,7 +34,19 @@ const DashboardLayout = ({
   async function deleteTask(id: string) {
     const deletedTask = await taskApi.deleteTask({id, token})
     if (deletedTask.deleted) {
-      getTasks()
+      setTasks(tasks.filter((task) => task.id !== id))
+    }
+  }
+
+  const saveTasks = (tasks: TaskApi[]) => {
+    setTasks(tasks)
+  }
+
+  const addTask = (task: TaskApi) => setTasks([...tasks, task])
+  const updateTask = (task: TaskApi) => {
+    const index = tasks.findIndex(t => t.id === task.id)
+    if(index !== -1) {
+      setTasks([...tasks.slice(0, index), task, ...tasks.slice(index + 1)])
     }
   }
   return (
@@ -61,7 +82,9 @@ const DashboardLayout = ({
             <h2 className="text-2xl font-bold mb-4">Task edit and add</h2>
             <div className="bg-gray-100 p-4 rounded">
               {/* <!-- Add your task edit and add form here --> */}
+              <TaskContext.Provider value={{addTask, updateTask, tasks}}>
               {children}
+              </TaskContext.Provider>
             </div>
           </div>
         </div>
@@ -70,4 +93,4 @@ const DashboardLayout = ({
   )
 }
 
-export default DashboardLayout
+export { DashboardLayout, TaskContext };
