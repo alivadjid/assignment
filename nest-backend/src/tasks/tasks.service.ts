@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
@@ -10,16 +11,34 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
 import { ObjectId } from 'mongodb';
+import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
+import { isUserInRequest } from 'src/users/utils/user.utils';
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(Task)
     private readonly taskRepository: MongoRepository<Task>,
+    private readonly usersSercie: UsersService,
   ) {}
-  async create(createTaskDto: CreateTaskDto): Promise<Task> {
+  private async getUserFromRequest(request: Request): Promise<User> {
+    if (isUserInRequest(request)) {
+      const userById = await this.usersSercie.findByUsername(
+        request.user.username,
+      );
+      return userById;
+    }
+
+    throw new UnauthorizedException('User not found in request');
+  }
+
+  async create(createTaskDto: CreateTaskDto, req: Request): Promise<Task> {
     try {
       const createdTask = await this.taskRepository.create(createTaskDto);
+      const userFromRequest = await this.getUserFromRequest(req);
+
+      createdTask.user = userFromRequest;
       const savedTask = this.taskRepository.save(createdTask);
       return savedTask;
     } catch (error) {
@@ -28,9 +47,13 @@ export class TasksService {
     }
   }
 
-  async findAll(): Promise<Task[]> {
+  async findAll(req: Request): Promise<Task[]> {
     try {
-      const tasks = await this.taskRepository.find();
+      const userFromRequest = await this.getUserFromRequest(req);
+
+      const tasks = await this.taskRepository.find({
+        where: { user: userFromRequest },
+      });
       return tasks;
     } catch (error) {
       console.error('Error finding tasks:', error);

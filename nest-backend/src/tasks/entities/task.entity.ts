@@ -1,4 +1,5 @@
-import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { Column, Entity, ObjectId, ObjectIdColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Task {
@@ -16,4 +17,7 @@ export class Task {
 
   @Column({ default: 'pending' })
   status: 'pending' | 'in-progress' | 'completed';
+
+  @ManyToOne(() => User, (user) => user.tasks)
+  user: User;
 }

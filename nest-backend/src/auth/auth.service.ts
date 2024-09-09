@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -9,6 +8,7 @@ import { UsersService } from '../users/users.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { errors } from './errors.list';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -22,6 +22,7 @@ export class AuthService {
       throw new UnauthorizedException(errors.INVALID_CREDENTIALS);
     }
     const payload = { username: user.username, sub: user.id };
+
     const accessToken = await this.jwtService.signAsync(payload, {
       expiresIn: 3600,
     });
