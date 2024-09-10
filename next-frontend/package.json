@@ -11,6 +11,8 @@
   "dependencies": {
     "@headlessui/react": "^2.1.5",
     "@heroicons/react": "^2.1.5",
+    "@tanstack/react-form": "^0.32.0",
+    "@tanstack/zod-form-adapter": "^0.32.0",
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "js-cookie": "^3.0.5",
@@ -18,7 +20,8 @@
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",

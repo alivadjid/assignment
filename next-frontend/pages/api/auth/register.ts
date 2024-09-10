@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { api } from '../../../utils/api/api'
+import { api, isAxiosError } from '../../../utils/api/api'
 
 
 type UserApi = {
@@ -19,12 +19,19 @@ export default async function handler(
       ...JSON.parse(frontData)
     })
     console.log('data', data, status)
-    if (status === 201) {
-      res.status(201).json(data)
+    if (status === 200) {
+      res.status(200).json(data)
     }
 
   } catch(error) {
-    console.log('error', error)
-    res.status(400).json(error)
+    if(isAxiosError(error)) {
+      if (error.response?.status === 400) {
+        res.status(400).json({ error: error.response.data })
+      } else if (error.response?.status === 401) {
+        res.status(401).json({ error: 'Unauthorized' })
+      } else {
+        res.status(500).json({ error: 'Internal server error' })
+      }
+    }
   }
 }

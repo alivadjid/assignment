@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { api } from '../../../utils/api/api'
+import { api, isAxiosError } from '../../../utils/api/api'
 
 type Token = {
   accessToken: string
@@ -24,6 +24,15 @@ export default async function handler(
     }
 
   } catch(error) {
-    res.status(400).json(error)
+    if(isAxiosError(error)) {
+      if (error.response?.status === 400) {
+        res.status(400).json({ error: 'Invalid credentials' })
+      } else if (error.response?.status === 401) {
+        res.status(401).json({ error: 'Unauthorized' })
+      } else {
+        res.status(500).json({ error: 'Internal server error' })
+      }
+    }
+    
   }
 }

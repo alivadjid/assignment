@@ -1,35 +1,53 @@
 'use client'
 import Image from "next/image"
-import { useContext } from 'react';
-import { StateContext } from '../StateContext';
 import authApi from '@/api/authApi'
 import { navigate }from '../actions'
 import Link from 'next/link'
+import { useState } from "react"
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const passwordRequirements = [
+  { label: 'At least one lowercase letter (s)', checked: false },
+  { label: 'At least one uppercase letter (P)', checked: false },
+  { label: 'At least one digit (0)', checked: false },
+  { label: 'At least one special character (@, !)', checked: false },
+  { label: 'Minimum length of 8 characters', checked: false },
+];
+type ValidationError = {error: {error: string, message: string[]}}
+function isError(apiError: unknown): apiError is ValidationError {
+  return apiError !== null && typeof apiError === 'object' 
+    && 'error' in apiError && apiError.error instanceof Object
+    && 'message' in apiError.error
+}
 
 
 const LoginPage = () => {
-  const { user } = useContext(StateContext);
-  console.log('user', user)
-  // if (!user) {
-  //   return <div>Please login</div>;
-  // }
-  // At least one lowercase letter (s)
-  // At least one uppercase letter (P)
-  // At least one digit (0)
-  // At least one special character (@, !)
-  // Minimum length of 8 characters
+  const [ showPassword, setShowPassword ] = useState(false)
+  const [apiError, setApiError] = useState<string[]>([])
+
 
   async function onSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     if (!(event.target instanceof HTMLElement)) return;
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     const jsonData = Object.fromEntries(formData)
-    const createdUser = await authApi.register(jsonData)
-    if(createdUser) navigate('login')
+    const createUserResult = await authApi.register(jsonData)
+    console.log('created', createUserResult)
+    if (isError(createUserResult)) {
+      console.log('seERro', createUserResult.error.message)
+      setApiError(createUserResult.error.message)
+      console.log('apiError', apiError)
+    } else {
+      navigate('login')
+    }
   }
 
+
   return <>
+    <ToastContainer />
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      {showPassword}
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Image
           alt="Your Company"
@@ -66,15 +84,22 @@ const LoginPage = () => {
                 Password
               </label>
             </div>
-            <div className="mt-2">
+            <div className="mt-2 relative">
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 autoComplete="current-password"
-                className="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 p-2 pr-16 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
+              <button
+                type="button"
+                className="absolute right-2 top-2"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
             </div>
           </div>
 
@@ -82,16 +107,41 @@ const LoginPage = () => {
             <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
               Confirm password
             </label>
-            <div className="mt-2">
+            <div className="mt-2 relative">
               <input
                 id="confirmPassword"
                 name="confirmPassword"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
-                className="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 p-2 pr-16 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
+              <button
+                type="button"
+                className="absolute right-2 top-2"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
             </div>
           </div>
+
+          <div className="mt-2">
+            <h2 className="text-sm font-medium leading-6 text-gray-900">Password Requirements:</h2>
+            <ul className="list-disc pl-4 text-sm text-gray-600">
+              {passwordRequirements.map((requirement, index) => (
+                <li key={index} className={requirement.checked ? 'text-green-600' : 'text-gray-600'}>
+                  {requirement.label}
+                </li>
+              ))}
+            </ul>
+          </div>
+          {apiError?.length > 0 && (
+            <div className="mt-2 bg-red-100 border-l-4 border-red-500 p-4">
+              {Array.isArray(apiError) ? apiError.map((error, index) => (
+                <p key={index} className="text-sm text-red-700">{error}</p>
+              )) : <p className="text-sm text-red-700">{apiError}</p>}
+            </div>
+          )}
 
           <div>
             <button

@@ -44,6 +44,7 @@ const DashboardLayout = ({
   async function deleteTask(id: string) {
     const deletedTask = await taskApi.deleteTask({id, token})
     if (deletedTask.deleted) {
+      getSummary()
       setTasks(tasks.filter((task) => task.id !== id))
     }
   }
@@ -52,11 +53,15 @@ const DashboardLayout = ({
     setTasks(tasks)
   }
 
-  const addTask = (task: TaskApi) => setTasks([...tasks, task])
+  const addTask = (task: TaskApi) => {
+    setTasks([...tasks, task])
+    getSummary()
+  }
   const updateTask = (task: TaskApi) => {
     const index = tasks.findIndex(t => t.id === task.id)
     if(index !== -1) {
       setTasks([...tasks.slice(0, index), task, ...tasks.slice(index + 1)])
+      getSummary()
     }
   }
   return (
@@ -92,10 +97,10 @@ const DashboardLayout = ({
             <h5 className="text-sm font-bold">Pending: {summary?.pendingTasks}, In Progress: {summary?.inProgressTasks}, Completed: {summary?.completedTasks}</h5>
             <h2 className="text-2xl font-bold mb-4">Task edit and add</h2>
             {
-              summary && Object.keys(summary).length && 
+              summary && Object.values(summary).some(e => e) && 
                 <div className="bg-gray-100">
                   <div className="mx-auto flex justify-center  p-1 md:p-6 lg:p-8 w-1/5">
-                    <TaskChart data={summary} />
+                    <TaskChart  data={summary} />
                   </div>
                 </div>
                 

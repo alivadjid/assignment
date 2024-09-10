@@ -1,6 +1,6 @@
 'use client'
 import Image from "next/image"
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { StateContext } from '../StateContext';
 import authApi from '@/api/authApi'
 import { navigate }from '../actions'
@@ -8,14 +8,10 @@ import Link from 'next/link'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 const LoginPage = () => {
-  const { user, saveUser, saveToken } = useContext(StateContext);
-  console.log('user', user)
-  // if (!user) {
-  //   return <div>Please login</div>;
-  // }
-
+  const { saveUser, saveToken } = useContext(StateContext);
+  const [ showPassword, setShowPassword ] = useState(false)
+  const [apiError, setApiError] = useState('')
 
   async function onSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     if (!(event.target instanceof HTMLElement)) return;
@@ -23,18 +19,19 @@ const LoginPage = () => {
     const formData = new FormData(event.currentTarget)
     const jsonData = Object.fromEntries(formData)
 
-    const loginData = await authApi.login(jsonData)
+    const loginResult = await authApi.login(jsonData)
 
-    if (typeof loginData === 'object' && loginData.accessToken) {
-      saveToken(loginData.accessToken)
-      const userData = await authApi.getUser(loginData.accessToken)
+    if (typeof loginResult === 'object' && loginResult.accessToken) {
+      saveToken(loginResult.accessToken)
+      const userData = await authApi.getUser(loginResult.accessToken)
       saveUser(userData)
       toast.success('Login successful', {
         position: "bottom-center"
       })
       navigate('dashboard')
     } else {
-      toast.error(`${loginData}`, {
+      setApiError(typeof loginResult === 'string' ? loginResult : '')
+      toast.error(`${loginResult}`, {
         position: "bottom-center"
       })
     }
@@ -79,17 +76,31 @@ const LoginPage = () => {
                 Password
               </label>
             </div>
-            <div className="mt-2">
+            <div className="mt-2 relative">
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 autoComplete="current-password"
-                className="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 p-2 pr-16 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
+              <button
+                type="button"
+                className="absolute right-2 top-2"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
             </div>
           </div>
+
+          {apiError && (
+            <div className="mt-2 bg-red-100 border-l-4 border-red-500 p-4">
+              <p className="text-sm text-red-700">{apiError}</p>
+            </div>
+          )}
+
 
           <div>
             <button
