@@ -16,8 +16,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: MongoRepository<User>,
   ) {}
-  create(createUserDto: CreateUserDto): Promise<User> {
-    // TODO: bcrypt
+  async create(createUserDto: CreateUserDto): Promise<User> {
     try {
       const createdUser = this.userRepository.create(createUserDto);
       const savedUser = this.userRepository.save(createdUser);

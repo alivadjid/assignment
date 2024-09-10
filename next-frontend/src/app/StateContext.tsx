@@ -9,17 +9,12 @@ const StateContext = createContext({
   removeUser: () => {},
   token: '',
   saveToken: (token: string) => {token},
-  // tasks: [{title: '', dueDate: '', id: '', description: '', status: 'pending'}],
-  // saveTasks: (tasks: TaskApi[]) => {tasks},
-  // addTask: (task: TaskApi) => {task},
-  // updateTask: (task: TaskApi) => {task},
   removeToken: () => {},
 });
 
 const StateProvider = ({ children }: {children: React.ReactNode}) => {
   const [user, setUser] = useState({username: ''});
   const [token, setToken] = useState('');
-  // const [tasks, setTasks] = useState<TaskApi[]>([]);
 
   const saveUser = (userData: {username: string}) => {
     setUser(userData);
@@ -42,7 +37,6 @@ const StateProvider = ({ children }: {children: React.ReactNode}) => {
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       setToken(parsedData.token);
-      // setTasks(parsedData.tasks);
 
       if (parsedData.token) {
         Cookies.set('isAuthenticated', 'true', { expires: 1 })

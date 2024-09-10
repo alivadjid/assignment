@@ -29,3 +29,25 @@ docker-compose up --build
   }
 }
 ```
+
+# Assignment
+
+## For start needs docker-compose to be install
+
+All request you can get from postman collection [postman-collection](./Assignment variable.postman_collection.json) file
+
+```
+docker-compose up --build
+```
+go to localhost:3001 -> login -> register
+
+After register it will redirect to login page
+
+After login it will redirect to dashboard
+
+On the dashboard you can see all tasks and chart with statuses
+
+You can add new task, edit and delete tasks.
+
+For logout choose -> profile picture -> logout
+

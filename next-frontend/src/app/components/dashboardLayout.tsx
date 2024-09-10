@@ -4,6 +4,7 @@ import { StateContext } from '../StateContext';
 import taskApi from '@/api/taskApi'
 import { TaskApi } from '../../../pages/api/tasks/list';
 import { TaskSummaryApi } from '../../../pages/api/tasks/summary';
+import TaskChart from './TaskCart';
 
 const TaskContext = createContext({
   addTask: (task: TaskApi) => {task},
@@ -87,9 +88,18 @@ const DashboardLayout = ({
           </div>
 
           <div className="p-4 w-full bg-white rounded-2xl">
-            <h2 className="text-xl font-bold">Summary: {summary?.totalTasks}</h2>
+            <h2 className="text-xl font-bold">Summary</h2>
             <h5 className="text-sm font-bold">Pending: {summary?.pendingTasks}, In Progress: {summary?.inProgressTasks}, Completed: {summary?.completedTasks}</h5>
             <h2 className="text-2xl font-bold mb-4">Task edit and add</h2>
+            {
+              summary && Object.keys(summary).length && 
+                <div className="bg-gray-100">
+                  <div className="mx-auto flex justify-center  p-1 md:p-6 lg:p-8 w-1/5">
+                    <TaskChart data={summary} />
+                  </div>
+                </div>
+                
+            }
             <div className="bg-gray-100 p-4 rounded">
               {/* <!-- Add your task edit and add form here --> */}
               <TaskContext.Provider value={{addTask, updateTask, tasks}}>

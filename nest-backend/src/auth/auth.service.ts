@@ -32,6 +32,7 @@ export class AuthService {
   }
 
   async signUp(signUpDto: SignUpDto) {
+    console.log('signUpDto', signUpDto);
     if (signUpDto.password !== signUpDto.confirmPassword) {
       throw new BadRequestException(errors.PASSWORDS_DO_NOT_MATCH);
     }

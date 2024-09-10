@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { api, isAxiosError } from '../../../utils/api/api'
+import { redirect } from 'next/navigation';
 
 type ProfileApi = {
   username: string
@@ -22,7 +23,8 @@ export default async function handler(
   } catch(error) {
     if (isAxiosError(error)) {
       if (error.status === 401) {
-        res.status(401).json({message: 'Unauthorized'})
+        redirect('/login')
+        // res.status(401).json({message: 'Unauthorized'})
       }
     }
     

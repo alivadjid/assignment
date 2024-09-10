@@ -13,15 +13,18 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const frontData = req.body
+  console.log('register', req.body)
   try {
-    const {data, status} = await api.post<UserApi>('/users', {
+    const {data, status} = await api.post<UserApi>('/auth/register', {
       ...JSON.parse(frontData)
     })
+    console.log('data', data, status)
     if (status === 201) {
       res.status(201).json(data)
     }
 
   } catch(error) {
+    console.log('error', error)
     res.status(400).json(error)
   }
 }

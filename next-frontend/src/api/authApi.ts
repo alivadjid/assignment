@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-async function login(jsonData: {[k: string]: FormDataEntryValue}): Promise<{accessToken: string}> {
+async function login(jsonData: {[k: string]: FormDataEntryValue}): Promise<{accessToken: string} | string> {
   const response = await fetch('/api/auth/login', {
     method: 'POST',
     headers: {
@@ -8,9 +8,14 @@ async function login(jsonData: {[k: string]: FormDataEntryValue}): Promise<{acce
     },
     body: JSON.stringify(jsonData),
   })
-
-  const data = await response.json()
-  return data
+  console.log('data', response)
+  if (response.status === 200) {
+    const data = await response.json()
+    return data
+  } else {
+    return response.statusText
+  }
+  
 }
 
 async function getUser(token: string): Promise<{username: string}> {
@@ -32,6 +37,7 @@ async function getUser(token: string): Promise<{username: string}> {
 }
 
 async function register(jsonData: {[k: string]: FormDataEntryValue}): Promise<{username: string}> {
+  console.log('register', jsonData)
   const response = await fetch('/api/auth/register', {
     method: 'POST',
     body: JSON.stringify(jsonData),

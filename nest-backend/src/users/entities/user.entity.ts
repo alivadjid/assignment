@@ -1,3 +1,9 @@
+import {
+  IsString,
+  IsNotEmpty,
+  IsAlphanumeric,
+  MinLength,
+} from 'class-validator';
 import { Task } from 'src/tasks/entities/task.entity';
 import {
   Column,
@@ -13,10 +19,15 @@ export class User {
   id: ObjectId;
 
   @Column()
+  @IsNotEmpty()
+  @IsAlphanumeric()
   @Unique(['username'])
   username: string;
 
   @Column()
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(8)
   password: string;
 
   @OneToMany(() => Task, (task) => task.user)
