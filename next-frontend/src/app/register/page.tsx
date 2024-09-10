@@ -8,12 +8,16 @@ import Link from 'next/link'
 
 
 const LoginPage = () => {
-  const { user, saveUser, token, saveToken } = useContext(StateContext);
+  const { user } = useContext(StateContext);
   console.log('user', user)
   // if (!user) {
   //   return <div>Please login</div>;
   // }
-
+  // At least one lowercase letter (s)
+  // At least one uppercase letter (P)
+  // At least one digit (0)
+  // At least one special character (@, !)
+  // Minimum length of 8 characters
 
   async function onSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     if (!(event.target instanceof HTMLElement)) return;

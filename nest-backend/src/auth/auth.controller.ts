@@ -7,6 +7,7 @@ import {
   Request,
   Post,
   Res,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorators.ts/public.decorator';
@@ -22,7 +23,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(
-    @Body() signInDto: SignInDto,
+    @Body(new ValidationPipe()) signInDto: SignInDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     const token = this.authService.signIn(signInDto);
@@ -38,7 +39,7 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('register')
-  signUp(@Body() signUpDto: SignUpDto) {
+  signUp(@Body(new ValidationPipe()) signUpDto: SignUpDto) {
     const user = this.authService.signUp(signUpDto);
 
     return user;
@@ -46,7 +47,6 @@ export class AuthController {
 
   @Get('profile')
   getProfile(@Request() req) {
-    // check
     // const accessToken = req.cookies['accessToken'];
     return req.user;
   }

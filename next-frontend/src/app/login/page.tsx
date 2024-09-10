@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 const LoginPage = () => {
-  const { user, saveUser, token, saveToken } = useContext(StateContext);
+  const { user, saveUser, saveToken } = useContext(StateContext);
   console.log('user', user)
   // if (!user) {
   //   return <div>Please login</div>;
