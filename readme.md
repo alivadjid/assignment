@@ -1,20 +1,35 @@
-# Instruction
-```sh
-docker-compose up
 
+# Assignment
+
+## For start needs docker-compose to be install
+
+All request you can get from postman collection [postman-collection](./Assignment variable.postman_collection.json) file
+
+```
+docker-compose up
 docker-compose up --build
 ```
+go to localhost:3001 -> login -> register
 
-- [ ] add containers
-- [ ] nest: db connect
-- [ ] nest: authorization/registration
-- [ ] nest: task entity
-- [ ] nest: auth guard
-- [ ] next: login page
-- [ ] next: dashboard
+After register it will redirect to login page
 
-- [ ] next: api bind
-- [ ] next: route guard
+After login it will redirect to dashboard
+
+On the dashboard you can see all tasks and chart with statuses
+
+You can add new task, edit and delete tasks.
+
+For logout choose -> profile picture -> logout
+
+- [*] add containers
+- [*] nest: db connect
+- [*] nest: authorization/registration
+- [*] nest: task entity
+- [*] nest: auth guard
+- [*] next: login page
+- [*] next: dashboard
+- [*] next: api bind
+- [*] next: route guard
 
 #### summary example
 ```json
@@ -30,24 +45,4 @@ docker-compose up --build
 }
 ```
 
-# Assignment
-
-## For start needs docker-compose to be install
-
-All request you can get from postman collection [postman-collection](./Assignment variable.postman_collection.json) file
-
-```
-docker-compose up --build
-```
-go to localhost:3001 -> login -> register
-
-After register it will redirect to login page
-
-After login it will redirect to dashboard
-
-On the dashboard you can see all tasks and chart with statuses
-
-You can add new task, edit and delete tasks.
-
-For logout choose -> profile picture -> logout
 
