@@ -5,8 +5,6 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN  npm install
 
-RUN npm install -g next
-
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -28,6 +26,8 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+
+RUN npm install -g next
 
 USER nextjs
 
