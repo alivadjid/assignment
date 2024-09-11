@@ -3,12 +3,10 @@ import { useParams } from 'next/navigation'
 import { StateContext } from '@/app/StateContext';
 import taskApi from '@/api/taskApi'
 import { TaskApi } from '../../../../pages/api/tasks/list';
-import { TaskContext } from '../dashboardLayout';
+import { navigate } from '@/app/actions';
 
 const TaskForm = () => {
   const { token } = useContext(StateContext);
-  const { tasks, addTask, updateTask } = useContext(TaskContext);
-
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -19,32 +17,34 @@ const TaskForm = () => {
   const isMounted = useRef(false)
 
   useEffect(() => {
-    const setFormInitialData = () => {
+    const setFormInitialData = async () => {
       if(queryId === 'new') {
         setDefaultValues({})
-      } else if(queryId && tasks.length) {
-        const taskId = queryId
-        const activeTask = tasks?.find((task) => task.id === taskId) as TaskApi
-        if (!activeTask) return
-        setDefaultValues({title: activeTask.title, description: activeTask.description, dueDate: activeTask.dueDate, status: activeTask.status})
-      }
+      } else if(queryId) {
+        const taskId = `${queryId}`
+        const taskByIdResult = await taskApi.getTaskById({token, id: taskId})
+        if (Array.isArray(taskByIdResult)) {
+          const task = {...taskByIdResult[0]}
+          setDefaultValues(task)
+        }
     }
-  
-    if (isMounted.current && queryId) {
-      setFormInitialData()
-    } else {
-      isMounted.current = true
-    }
-  }, [queryId, tasks])
+  }
+  if (isMounted.current && queryId && token) {
+    setFormInitialData()
+  } else {
+    isMounted.current = true
+  }
+  }, [queryId, token])
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (queryId === 'new') {
       const createdTask = await taskApi.createTask({token, taskData: {title, description, dueDate, status}})
-      addTask(createdTask)
+      createdTask && navigate('dashboard')
     } else {
       const updatedTask = await taskApi.updateTask({token, taskData: {title, description, dueDate, status, id: queryId}})
-      updateTask(updatedTask[0])
+      updatedTask && navigate('dashboard')
     }
   };
 

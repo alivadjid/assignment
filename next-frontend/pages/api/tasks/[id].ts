@@ -6,19 +6,51 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const headers = req.headers
-  const frontData = req.body
+  const { method, headers, body } = req
   const id = req.query.id
-  try {
-    const {data, status} = await api.put<TaskApi>(`/tasks/${id}`, frontData, {
-      headers
-    })
-    
-    if (status === 200) {
-      res.status(200).json(data)
-    }
 
-  } catch(error) {
-    res.status(400).json(error)
+  switch(method) {
+    case 'GET': {
+      await getHandler()
+      break
+    }
+    case 'PUT': {
+      await putHandler()
+      break
+    }
+    default: {
+      res.status(405).json({ error: 'Method not allowed' })
+    }
+  }
+
+  async function putHandler() {
+    try {
+      const {data, status} = await api.put<TaskApi>(`/tasks/${id}`, body, {
+        headers
+      })
+      
+      if (status === 200) {
+        res.status(200).json(data)
+      }
+  
+    } catch(error) {
+      res.status(400).json(error)
+    }
+  }
+
+  async function getHandler() {
+    try {
+      const {data, status} = await api.get<TaskApi>(`/tasks/${id}`, {
+        headers
+      })
+      
+      if (status === 200) {
+        res.status(200).json(data)
+      }
+  
+    } catch(error) {
+      res.status(400).json(error)
+    }
   }
 }
+

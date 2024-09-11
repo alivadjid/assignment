@@ -44,7 +44,7 @@ async function createTask({token, taskData}: {token: string, taskData: CreateTas
 
 async function updateTask({token, taskData}: {token: string, taskData: CreateTaskData & { id: string }}): Promise<TaskApi[]> {
   const response = await fetch(`/api/tasks/${taskData.id}`, {
-    method: 'POST',
+    method: 'PUT',
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -68,7 +68,19 @@ async function getSummary({token}: {token: string}): Promise<TaskSummaryApi> {
   return data
 }
 
+async function getTaskById({token, id}: {token: string, id:string}): Promise<TaskApi> {
+  console.log('getTAsk By id',token, id)
+  const response = await fetch(`/api/tasks/${id}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  const data = await response.json()
 
-const taskApi = { getTaskList, deleteTask, createTask, updateTask, getSummary }
+  return data
+}
+
+const taskApi = { getTaskList, deleteTask, createTask, updateTask, getSummary, getTaskById }
 
 export default taskApi

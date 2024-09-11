@@ -16,18 +16,13 @@ const UserInformation = ({userNavigation}: Readonly<{
 }>) => {
   const { removeUser, removeToken } = useContext(StateContext);
 
-  // function handlerClick(e: React.MouseEvent<HTMLElement>) {
-  //   if (!(e.target instanceof HTMLElement)) return;
-  //   console.log('n', e.target.textContent)
-  // }
   function handlerClick(url: string) {
-    console.log('url', url)
     if(url === 'signOut') {
       Cookies.remove('isAuthenticated')
       localStorage.removeItem('appState')
       removeUser()
       removeToken()
-      return navigate('/login')
+      return navigate('login')
     }
   }
 
