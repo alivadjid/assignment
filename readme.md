@@ -5,6 +5,11 @@
 
 All request you can get from postman collection [postman-collection](./Assignment variable.postman_collection.json) file
 
+1. Clone repository
+2. In nest-backend folder run `npm i`
+3. In next-frontend folder run `npm i`
+4. Now start docker-compose from root folder
+
 ```
 docker-compose up
 docker-compose up --build

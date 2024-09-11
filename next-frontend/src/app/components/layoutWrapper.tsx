@@ -121,7 +121,7 @@ const LayoutWrapper = ({children}:Readonly<{
                 </DisclosureButton>
             }
             </div>
-            {user.username && <MobileMenu userNavigation={userNavigation} user={user}/>}
+            <MobileMenu userNavigation={userNavigation} user={user}/>
           </DisclosurePanel>
       </Disclosure>
       
