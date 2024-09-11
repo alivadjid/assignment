@@ -5,8 +5,6 @@ import { navigate }from '@/app/actions'
 import { isError }from '@/app/helpers'
 import Link from 'next/link'
 import { useState } from "react"
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Loader from "@/app/components/loader"
 
 const passwordRequirements = [
@@ -40,7 +38,6 @@ const LoginPage = () => {
 
 
   return <>
-    <ToastContainer />
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       {showPassword}
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
