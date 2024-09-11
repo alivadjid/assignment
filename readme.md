@@ -53,5 +53,3 @@ For logout choose -> profile picture -> logout
   }
 }
 ```
-
-
