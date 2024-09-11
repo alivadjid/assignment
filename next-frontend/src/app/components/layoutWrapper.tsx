@@ -99,7 +99,7 @@ const LayoutWrapper = ({children}:Readonly<{
 
         <DisclosurePanel className="md:hidden">
             <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-              {navigation.map((item) => (
+              {user.username ? navigation.map((item) => (
                 <DisclosureButton
                   key={item.name}
                   as="a"
@@ -111,10 +111,17 @@ const LayoutWrapper = ({children}:Readonly<{
                   )}
                 >
                   {item.name}
+                </DisclosureButton>)) 
+                :
+                <DisclosureButton as="a" href={navigation[0].href} aria-current={navigation[0].current ? 'page' : undefined} className={classNames(
+                  navigation[0].current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                  'block rounded-md px-3 py-2 text-base font-medium',
+                )}>
+                  {navigation[0].name}
                 </DisclosureButton>
-              ))}
+            }
             </div>
-            <MobileMenu userNavigation={userNavigation} user={user}/>
+            {user.username && <MobileMenu userNavigation={userNavigation} user={user}/>}
           </DisclosurePanel>
       </Disclosure>
       
