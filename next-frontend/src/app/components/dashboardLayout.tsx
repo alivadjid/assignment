@@ -93,7 +93,7 @@ const DashboardLayout = ({
           </div>
 
           <div className="p-4 w-full bg-white rounded-2xl">
-            <h2 className="text-xl font-bold">Summary</h2>
+            <h2 className="text-xl font-bold">Summary: {summary?.totalTasks}</h2>
             <h5 className="text-sm font-bold">Pending: {summary?.pendingTasks}, In Progress: {summary?.inProgressTasks}, Completed: {summary?.completedTasks}</h5>
             <h2 className="text-2xl font-bold mb-4">Task edit and add</h2>
             {
