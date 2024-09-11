@@ -1,21 +1,25 @@
 'use client'
 import Image from "next/image"
 import { useContext, useState } from 'react';
-import { StateContext } from '../StateContext';
+import { StateContext } from '@/app/StateContext';
 import authApi from '@/api/authApi'
-import { navigate }from '../actions'
+import { navigate }from '@/app/actions'
+import { isApiError }from '@/app/helpers'
 import Link from 'next/link'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Loader from "@/app/components/loader";
 
 const LoginPage = () => {
   const { saveUser, saveToken } = useContext(StateContext);
   const [ showPassword, setShowPassword ] = useState(false)
   const [apiError, setApiError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   async function onSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     if (!(event.target instanceof HTMLElement)) return;
     event.preventDefault()
+    setIsLoading(true)
     const formData = new FormData(event.currentTarget)
     const jsonData = Object.fromEntries(formData)
 
@@ -30,8 +34,10 @@ const LoginPage = () => {
       })
       navigate('dashboard')
     } else {
-      setApiError(typeof loginResult === 'string' ? loginResult : '')
-      toast.error(`${loginResult}`, {
+      setIsLoading(false)
+      const error = isApiError(loginResult) ? loginResult.error : ''
+      setApiError(error)
+      toast.error(`${error}`, {
         position: "bottom-center"
       })
     }
@@ -49,8 +55,9 @@ const LoginPage = () => {
           height={100}
         />
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Sign in to your account
+          Sign in to your account {isLoading}
         </h2>
+        
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -101,14 +108,16 @@ const LoginPage = () => {
             </div>
           )}
 
-
           <div>
             <button
               type="submit"
               name="signIn"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              disabled={isLoading}
             >
-              Sign in
+            {
+              isLoading ? <Loader /> : 'Sign in'
+            }
             </button>
 
             <Link href="/register" className="flex justify-center mt-2">Sign up</Link>

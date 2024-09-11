@@ -8,8 +8,7 @@ async function login(jsonData: {[k: string]: FormDataEntryValue}): Promise<{acce
     },
     body: JSON.stringify(jsonData),
   })
-  console.log('data', response)
-  if (response.status === 200) {
+  if (response.status === 200 || response.status === 400) {
     const data = await response.json()
     return data
   } else {

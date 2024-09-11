@@ -19,9 +19,8 @@ export class AuthService {
   async signIn(signInDto: SignInDto) {
     const user = await this.usersService.findByUsername(signInDto.username);
     console.log('user', user);
-    if (!user) throw new BadRequestException(errors.INVALID_CREDENTIALS);
-    if (user.password !== signInDto.password) {
-      throw new UnauthorizedException(errors.INVALID_CREDENTIALS);
+    if (!user || user.password !== signInDto.password) {
+      throw new BadRequestException(errors.INVALID_CREDENTIALS);
     }
     const payload = { username: user.username, sub: user.id };
 

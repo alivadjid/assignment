@@ -1,11 +1,13 @@
 'use client'
 import Image from "next/image"
 import authApi from '@/api/authApi'
-import { navigate }from '../actions'
+import { navigate }from '@/app/actions'
+import { isError }from '@/app/helpers'
 import Link from 'next/link'
 import { useState } from "react"
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Loader from "@/app/components/loader"
 
 const passwordRequirements = [
   { label: 'At least one lowercase letter (s)', checked: false },
@@ -14,30 +16,23 @@ const passwordRequirements = [
   { label: 'At least one special character (@, !)', checked: false },
   { label: 'Minimum length of 8 characters', checked: false },
 ];
-type ValidationError = {error: {error: string, message: string[]}}
-function isError(apiError: unknown): apiError is ValidationError {
-  return apiError !== null && typeof apiError === 'object' 
-    && 'error' in apiError && apiError.error instanceof Object
-    && 'message' in apiError.error
-}
 
 
 const LoginPage = () => {
   const [ showPassword, setShowPassword ] = useState(false)
   const [apiError, setApiError] = useState<string[]>([])
-
+  const [isLoading, setIsLoading] = useState(false)
 
   async function onSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     if (!(event.target instanceof HTMLElement)) return;
     event.preventDefault()
+    setIsLoading(true)
     const formData = new FormData(event.currentTarget)
     const jsonData = Object.fromEntries(formData)
-    const createUserResult = await authApi.register(jsonData)
-    console.log('created', createUserResult)
-    if (isError(createUserResult)) {
-      console.log('seERro', createUserResult.error.message)
-      setApiError(createUserResult.error.message)
-      console.log('apiError', apiError)
+    const result = await authApi.register(jsonData)
+    if (isError(result)) {
+      setIsLoading(false)
+      setApiError(result.error.message)
     } else {
       navigate('login')
     }
@@ -149,7 +144,9 @@ const LoginPage = () => {
               name="signIn"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Sign up
+              {
+                isLoading ? <Loader /> : 'Sign up'
+              }
             </button>
 
             <Link href="/login" className="flex justify-center mb-2">Sign in</Link>
