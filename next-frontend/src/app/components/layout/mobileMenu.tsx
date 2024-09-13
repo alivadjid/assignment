@@ -2,6 +2,8 @@ import {
   DisclosureButton, 
  } from '@headlessui/react'
 import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation'
 
 const MobileMenu = ({userNavigation, user}: Readonly<{
   userNavigation: {
@@ -12,6 +14,21 @@ const MobileMenu = ({userNavigation, user}: Readonly<{
     username: string
   }
 }>) => {
+  const [isLoginPage, setIsLoginPage] = useState(false)
+  const mounted = useRef(false)
+  const pathname = usePathname()
+  useEffect(() => {
+    if(!mounted.current) {
+      mounted.current = true
+      if(pathname === '/login') {
+        setIsLoginPage(true)
+      }
+
+    }
+  }, [pathname])
+  function classNames(...classes: string[]) {
+    return classes.filter(Boolean).join(' ')
+  }
   return (
     <div className="border-t border-gray-700 pb-3 pt-4">
       
@@ -51,7 +68,11 @@ const MobileMenu = ({userNavigation, user}: Readonly<{
       <DisclosureButton
         as="a"
         href="/login"
-        className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+        className={classNames(
+          `block rounded-md px-3 py-2 text-base font-medium
+           ${isLoginPage ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`
+        )}
+
       >
         Login
     </DisclosureButton>

@@ -34,7 +34,7 @@ const LayoutWrapper = ({children}:Readonly<{
       })
 
     }
-  }, [])
+  }, [pathname])
 
   const [navigation, setNavigation] = useState([
     { name: 'Main', href: '/', current: false },
