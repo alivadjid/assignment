@@ -69,7 +69,6 @@ async function getSummary({token}: {token: string}): Promise<TaskSummaryApi> {
 }
 
 async function getTaskById({token, id}: {token: string, id:string}): Promise<TaskApi> {
-  console.log('getTAsk By id',token, id)
   const response = await fetch(`/api/tasks/${id}`, {
     method: 'GET',
     headers: {

@@ -4,6 +4,7 @@ import { StateContext } from '@/app/StateContext';
 import taskApi from '@/api/taskApi'
 import { TaskApi } from '../../../../pages/api/tasks/list';
 import { navigate } from '@/app/actions';
+import Loader from '../loader';
 
 const TaskForm = () => {
   const { token } = useContext(StateContext);
@@ -11,6 +12,7 @@ const TaskForm = () => {
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [status, setStatus] = useState<TaskApi['status']>('pending');
+  const [loading, setLoading] = useState(false)
 
   const params = useParams()
   const queryId = Array.isArray(params?.id) ? params?.id[0] : ''
@@ -39,6 +41,7 @@ const TaskForm = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true)
     if (queryId === 'new') {
       const createdTask = await taskApi.createTask({token, taskData: {title, description, dueDate, status}})
       createdTask && navigate('dashboard')
@@ -54,7 +57,8 @@ const TaskForm = () => {
     setDueDate(dueDate)
     setStatus(status)
   }
-
+  const buttonText = () => queryId === 'new' ? 'Add Task' : 'Update Task'
+  
   return (
     <div className="max-w-md mx-auto p-4 bg-white rounded shadow-md">
       <h2 className="text-lg font-bold mb-4">Task Form</h2>
@@ -68,6 +72,7 @@ const TaskForm = () => {
             id="title"
             type="text"
             value={title}
+            required
             onChange={(event) => setTitle(event.target.value)}
           />
         </div>
@@ -112,8 +117,9 @@ const TaskForm = () => {
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           type="submit"
+          disabled={loading}
         >
-          {queryId === 'new' ? 'Add Task' : 'Update Task'}
+          { loading ? <Loader /> : buttonText() }
         </button>
       </form>
     </div>

@@ -6,12 +6,17 @@ import { TaskApi } from '../../../pages/api/tasks/list';
 import { TaskSummaryApi } from '../../../pages/api/tasks/summary';
 import TaskChart from './TaskCart';
 import Skeleton from './skeleton';
+import Loader from './loader';
+import { navigate } from '../actions';
 
 const DashboardLayout = () => {
   const { token } = useContext(StateContext);
   const [tasks, setTasks] = useState<TaskApi[]>([]);
   const [summary, setSummary] = useState<TaskSummaryApi>()
   const [loading, setLoading] = useState(true)
+  const [addTaskLoading, setAddTaskLoading] = useState(false)
+  const [editTaskLoading, setEditTaskLoading] = useState('')
+  const [deleteTaskLoading, setDeleteTaskLoading] = useState('')
 
 
   useEffect(() => {
@@ -35,15 +40,25 @@ const DashboardLayout = () => {
   }
 
   async function deleteTask(id: string) {
+    setDeleteTaskLoading(id)
     const deletedTask = await taskApi.deleteTask({id, token})
     if (deletedTask.deleted) {
       getSummary()
       setTasks(tasks.filter((task) => task.id !== id))
+      setDeleteTaskLoading('')
     }
   }
 
   const saveTasks = (tasks: TaskApi[]) => {
     setTasks(tasks)
+  }
+
+  function handlerAddTask() {
+    setAddTaskLoading(true)
+    navigate('dashboard/new')
+  }
+  function handlerEditTAsk(id: string) {
+    setEditTaskLoading(id)
   }
   return (
     <>
@@ -54,10 +69,17 @@ const DashboardLayout = () => {
           : <div className="flex flex-wrap justify-center mb-4">
           <div className="w-full md:w-1/2 xl:w-1/3 p-4 bg-white rounded-2xl">
             <h2 className="text-xl font-bold mb-2">Task List</h2>
-            <Link href={`/dashboard/new`} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Add Task
-              </Link>
+            <button
+              type="submit"
+              name="signIn"
+              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              disabled={addTaskLoading}
+              onClick={handlerAddTask}
+            >
+              {
+                addTaskLoading ? <Loader /> : 'Add Task'
+              }
+            </button>
             <ul className="mt-4">
               {Array.isArray(tasks) && tasks.map((task) => {
                 return (
@@ -67,8 +89,20 @@ const DashboardLayout = () => {
                         {task.title}
                       </div>
                       <div className="flex">
-                        <Link href={`/dashboard/${task.id}`} className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-1 rounded mr-1">Edit</Link>
-                        <button onClick={() => deleteTask(task.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-1 rounded">Delete</button>
+                        <Link
+                          href={`/dashboard/${task.id}`} 
+                          className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-1 rounded mr-1"
+                          onClick={() => handlerEditTAsk(task.id)}
+                        >
+                          { editTaskLoading === task.id ? <Loader /> : 'Edit' }
+                        </Link>
+                        <button 
+                          onClick={() => deleteTask(task.id)} 
+                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-1 rounded"
+                          disabled={deleteTaskLoading === task.id}
+                        >
+                          { deleteTaskLoading === task.id ? <Loader /> : 'Delete' }
+                        </button>
                       </div>
                     </div>
                   </li>
