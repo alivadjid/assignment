@@ -4,30 +4,44 @@ import { Disclosure,
   DisclosurePanel, 
  } from '@headlessui/react'
 import {  
-  // BellIcon,
   XMarkIcon,
   Bars3Icon
 } from '@heroicons/react/24/outline'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useContext } from 'react';
 import { StateContext } from '../StateContext';
 import LoginButton from './layout/loginButton'
 import UserInformation from './layout/userInformation'
 import MobileMenu from './layout/mobileMenu'
+import { usePathname } from 'next/navigation'
 
 const LayoutWrapper = ({children}:Readonly<{
   children: React.ReactNode;
 }>) => {
   const { user } = useContext(StateContext);
+  const mounted = useRef(false)
+  const pathname = usePathname()
 
-  const [navigation] = useState([
-    { name: 'Main', href: '/', current: true },
+  useEffect(() => {
+    if(!mounted.current) {
+      mounted.current = true
+      setNavigation((navigation) => {
+        return navigation.map((item) => {
+          item.current = item.href === pathname
+          return item
+        })
+      })
+
+    }
+  }, [])
+
+  const [navigation, setNavigation] = useState([
+    { name: 'Main', href: '/', current: false },
     { name: 'Dashboard', href: '/dashboard', current: false },
   ])
 
   const [userNavigation] = useState([
-    { name: 'Your Profile', href: '#', url: 'profile' },
     { name: 'Sign out', href: '#', url: 'signOut' },
   ])
  
